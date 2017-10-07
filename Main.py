@@ -7,18 +7,21 @@ from config import ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, CONSUMER_SECRET, CONSU
 
 class Main():
 
+
+
     def __init__(self):
         # Nos identificamos con twitter
         self.tw = Twitter(auth = OAuth(ACCESS_TOKEN_KEY,ACCESS_TOKEN_SECRET,CONSUMER_KEY,CONSUMER_SECRET))
-        self.busqueda()
+        self.candidatos=["@CFKArgentina", "@estebanbullrich" , "@SergioMassa" , "@RandazzoF" , "@nestorpitrola", "@JorgeTaiana" , "@gladys_gonzalez" , "@Stolbizer" , "@andreadatri"]
+        self.busqueda(candidatos)
+
 
 
     #RECOMPILO TWEETS Y LOS ALMACENO
-    def busqueda(self):
+    def busqueda(self,lista,almacenamiento):
 
-        candidatos=["@CFKArgentina", "@estebanbullrich" , "@SergioMassa" , "@RandazzoF" , "@nestorpitrola", "@JorgeTaiana" , "@gladys_gonzalez" , "@Stolbizer" , "@andreadatri"]
-        candidatos_OR = str(' OR ').join(candidatos)
-        almacenamiento = {'@CFKArgentina': {}, '@estebanbullrich': {}, '@SergioMassa': {}, '@RandazzoF': {},'@nestorpitrola': {},'@JorgeTaiana': {}, '@gladys_gonzalez': {}, '@Stolbizer': {}, '@andreadatri': {}}
+        candidatos_OR = str(' OR ').join(lista)
+
         contador = 0
 
 
@@ -29,29 +32,30 @@ class Main():
             id = tweet['id']
             print(ascii(tweet['text']))
             text = tweet['text']
-            for candidato in candidatos:
+            for candidato in lista:
                 if candidato in text:
                     if id not in almacenamiento[candidato]:
                         almacenamiento[candidato][id] = {'Hora': resultados['statuses'][0]['created_at'], 'Texto': text}
                         contador += 1
 
 
-        time.sleep(20)
 
-        for x in range(0,500):
+        for x in range(0,10):
+            time.sleep(15)
             resultados = self.tw.search.tweets(q=candidatos_OR,result_type='recent',count=1, since_id= ultimo_id)
-            ultimo_id = resultados['statuses'][0]['id']
-            for tweet in resultados['statuses']:
-                print(ascii(tweet['id']))
-                id = tweet['id']
-                print(ascii(tweet['text']))
-                text = tweet['text']
-                for candidato in candidatos:
-                    if candidato in text:
-                        if id not in almacenamiento[candidato]:
-                            almacenamiento[candidato][id] = {'Hora': resultados['statuses'][0]['created_at'],
-                                                             'Texto': text}
-                            contador += 1
+            if resultados['statuses'] !=[]:
+                ultimo_id = resultados['statuses'][0]['id']
+                for tweet in resultados['statuses']:
+                    print(ascii(tweet['id']))
+                    id = tweet['id']
+                    print(ascii(tweet['text']))
+                    text = tweet['text']
+                    for candidato in candidatos:
+                        if candidato in text:
+                            if id not in almacenamiento[candidato]:
+                                almacenamiento[candidato][id] = {'Hora': resultados['statuses'][0]['created_at'],
+                                                                 'Texto': text}
+                                contador += 1
 
 
 
