@@ -57,7 +57,7 @@ class Main():
                                                                  'Texto': text}
 
         Persistencia.guardar(almacenamiento)
-
+        Persistencia.guarda_estadistica(contador)
 
 
 

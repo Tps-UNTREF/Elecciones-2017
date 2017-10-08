@@ -1,7 +1,7 @@
 import json
 import os
+import Main
 
-import pickle
 
 
 def cargar():
@@ -21,6 +21,12 @@ def guardar(almacenamiento):
         json.dump(diccionario, file)
         file.close()
 
-def guarda_estadistica(ultimo_id,cantidad_tweets):
-    file = open('Estadisticas.p', 'wb')
-    pickle.dump()
+def guarda_estadistica(cantidad_tweets):
+    file = open('Estadisticas.j', 'w')
+    lista=[cantidad_tweets]
+    json.dump(lista,file)
+    file.closed()
+
+def carga_estadistica():
+    file=open('Estadisticas.j', 'r')
+    return json.load(file)
