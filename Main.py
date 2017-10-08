@@ -5,65 +5,49 @@ from twitter import *
 import Persistencia
 from config import ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, CONSUMER_SECRET, CONSUMER_KEY
 
+
 class Main():
-
-
 
     def __init__(self):
         # Nos identificamos con twitter
-        self.tw = Twitter(auth = OAuth(ACCESS_TOKEN_KEY,ACCESS_TOKEN_SECRET,CONSUMER_KEY,CONSUMER_SECRET))
-        self.candidatos=["@CFKArgentina", "@estebanbullrich" , "@SergioMassa" , "@RandazzoF" , "@nestorpitrola", "@JorgeTaiana" , "@gladys_gonzalez" , "@Stolbizer" , "@andreadatri"]
-        almacenamiento = almacenamiento = {'@CFKArgentina': {}, '@estebanbullrich': {}, '@SergioMassa': {}, '@RandazzoF': {},'@nestorpitrola': {},'@JorgeTaiana': {}, '@gladys_gonzalez': {}, '@Stolbizer': {}, '@andreadatri': {}}
-        self.busqueda(self.candidatos,almacenamiento)
+        self.tw = Twitter(auth=OAuth(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET))
+        self.candidatos = ["@CFKArgentina", "@estebanbullrich", "@SergioMassa", "@RandazzoF", "@nestorpitrola",
+                           "@JorgeTaiana", "@gladys_gonzalez", "@Stolbizer", "@andreadatri"]
+        almacenamiento = Persistencia.cargar()
+        self.busqueda(self.candidatos, almacenamiento)
 
-
-
-    #RECOMPILO TWEETS Y LOS ALMACENO
-    def busqueda(self,lista,almacenamiento):
-
-        candidatos_OR = str(' OR ').join(lista)
-
-        contador = 0
-
-        resultados = self.tw.search.tweets(q=candidatos_OR, result_type='recent', count=100)
-        ultimo_id = resultados['statuses'][0]['id']
-        for tweet in resultados['statuses']:
-            print(ascii(tweet['id']))
-            id = tweet['id']
-            print(ascii(tweet['text']))
-            text = tweet['text']
-            for candidato in lista:
-                if candidato in text:
-                    if id not in almacenamiento[candidato]:
-                        almacenamiento[candidato][id] = {'Hora': resultados['statuses'][0]['created_at'], 'Texto': text}
-                        contador += 1
-
-
-
-        for x in range(0,3):
-            time.sleep(15)
-            resultados = self.tw.search.tweets(q=candidatos_OR,result_type='recent',count=1, since_id= ultimo_id)
-            if resultados['statuses'] !=[]:
-                ultimo_id = resultados['statuses'][0]['id']
+    def busqueda(self, lista, almacenamiento):
+     while True:
+            try:
+                candidatos_OR = str(' OR ').join(lista)
+                contador_aux = 0
+                print('retardo 15 segundos...(Si tocas ctrl-c frena cuando termina este tiempo)')
+                time.sleep(15)
+                resultados = self.tw.search.tweets(q=candidatos_OR, result_type='recent', count=100)
                 for tweet in resultados['statuses']:
-                    print(ascii(tweet['id']))
-                    id = tweet['id']
-                    print(ascii(tweet['text']))
+                    id = str(tweet['id'])
                     text = tweet['text']
                     for candidato in lista:
                         if candidato in text:
-                            if id not in almacenamiento[candidato]:
+                            if str(id) not in almacenamiento[candidato]:
+                                print(ascii(tweet['id']))
+                                print(ascii(tweet['text']))
                                 almacenamiento[candidato][id] = {'Hora': resultados['statuses'][0]['created_at'],
                                                                  'Texto': text}
+                                contador_aux += 1
 
-        Persistencia.guardar(almacenamiento)
-        Persistencia.guarda_estadistica(contador)
+                print('se obtuvieron ' + str(contador_aux) + ' tweets')
+            except (KeyboardInterrupt, EOFError):
+                Persistencia.guardar(almacenamiento)
+                self.total_tweets(almacenamiento)
+                break
 
-
-
-
-
-
+    def total_tweets(self,almacenamiento):
+        contador = 0
+        for candidato, tweets in almacenamiento.items():
+            print(candidato, ': ', len(tweets))
+            contador += len(tweets)
+        print('Total: ', contador)
 
 
 if __name__ == '__main__':
