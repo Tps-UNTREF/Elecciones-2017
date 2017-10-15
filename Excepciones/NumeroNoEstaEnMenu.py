@@ -1,0 +1,2 @@
+class NumeroNoEstaEnMenu(Exception):
+    pass

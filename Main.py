@@ -3,6 +3,7 @@ import time
 from twitter import *
 
 import Persistencia
+from Excepciones.NumeroNoEstaEnMenu import NumeroNoEstaEnMenu
 from config import ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, CONSUMER_SECRET, CONSUMER_KEY
 
 
@@ -11,10 +12,34 @@ class Main():
     def __init__(self):
         # Nos identificamos con twitter
         self.tw = Twitter(auth=OAuth(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET))
-        self.candidatos = ["@CFKArgentina", "@estebanbullrich", "@SergioMassa", "@RandazzoF", "@nestorpitrola",
-                           "@JorgeTaiana", "@gladys_gonzalez", "@Stolbizer", "@andreadatri"]
-        almacenamiento = Persistencia.cargar()
-        self.busqueda(self.candidatos, almacenamiento)
+
+        try:
+            while True:
+                numero_menu = self.leer_entero('Ingrese una opción: \n' '1- Obtener tweets \n' '2- Obtener ranking(Mas tweeteados) \n' '3- Obtener Estadisticas \n' '4 - Terminar')
+
+                if numero_menu == 1:
+                    # OBTENER TWEETS
+                    self.candidatos = ["@CFKArgentina", "@estebanbullrich", "@SergioMassa", "@RandazzoF", "@nestorpitrola", "@JorgeTaiana", "@gladys_gonzalez", "@Stolbizer", "@andreadatri"]
+                    almacenamiento = Persistencia.cargar()
+                    self.busqueda(self.candidatos, almacenamiento)
+
+                elif numero_menu == 2:
+                    # OBTENER RANKING
+                    pass
+
+                elif numero_menu == 3:
+                    # OBTENER ESTADISTICAS
+                    pass
+
+                elif numero_menu == 4:
+                    #TERMINAR
+                    break
+
+                else:
+                    raise NumeroNoEstaEnMenu
+        except NumeroNoEstaEnMenu:
+            print('Por favor, ingrese un numero del 1 al 4.')
+
 
     def busqueda(self, lista, almacenamiento):
      while True:
@@ -48,6 +73,19 @@ class Main():
             print(candidato, ': ', len(tweets))
             contador += len(tweets)
         print('Total: ', contador)
+
+    def leer_entero(self, texto):
+        while True:
+            try:
+                ingresado = eval(input(texto))
+                if type(ingresado) == int:
+                    return ingresado
+                else:
+                    raise Exception
+            except (Exception, ValueError):
+                print('Por favor ingrese un numero entero')
+            except (EOFError, KeyboardInterrupt):
+                print('Error atrapado de Ctrl-C')
 
 
 if __name__ == '__main__':
