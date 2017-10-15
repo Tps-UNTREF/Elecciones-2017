@@ -3,6 +3,7 @@ import time
 from twitter import *
 
 import Persistencia
+from Procesamiento import *
 from Excepciones.NumeroNoEstaEnMenu import NumeroNoEstaEnMenu
 from config import ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, CONSUMER_SECRET, CONSUMER_KEY
 
@@ -15,7 +16,7 @@ class Main():
 
         try:
             while True:
-                numero_menu = self.leer_entero('Ingrese una opción: \n' '1- Obtener tweets \n' '2- Obtener ranking(Mas tweeteados) \n' '3- Obtener Estadisticas \n' '4 - Terminar')
+                numero_menu = self.leer_entero('Ingrese una opción: \n' '1- Obtener tweets \n' '2- Obtener ranking(Mas tweeteados) \n' '3- Obtener Estadisticas \n' '4- Terminar \n')
 
                 if numero_menu == 1:
                     # OBTENER TWEETS
@@ -25,7 +26,7 @@ class Main():
 
                 elif numero_menu == 2:
                     # OBTENER RANKING
-                    pass
+                    Procesamiento.ranking_candidato_mas_mencionados()
 
                 elif numero_menu == 3:
                     # OBTENER ESTADISTICAS
@@ -42,6 +43,7 @@ class Main():
 
 
     def busqueda(self, lista, almacenamiento):
+     contador_total_aux = 0
      while True:
             try:
                 candidatos_OR = str(' OR ').join(lista)
@@ -62,22 +64,20 @@ class Main():
                                 contador_aux += 1
 
                 print('se obtuvieron ' + str(contador_aux) + ' tweets')
+                contador_total_aux += contador_aux
             except (KeyboardInterrupt, EOFError):
                 Persistencia.guardar(almacenamiento)
-                self.total_tweets(almacenamiento)
+                print('Se encontraron ' + str(contador_total_aux) + ' Tweets en esta oportunidad.')
                 break
+
     @staticmethod
     def total_tweets(almacenamiento):
         lista_candidatos=[]
         contador = 0
         for candidato, tweets in almacenamiento.items():
-            print(candidato, ': ', len(tweets))
             contador += len(tweets)
             lista_candidatos.append((len(tweets),candidato))
-        print('Total: ', contador)
         return lista_candidatos
-
-
 
 
     def leer_entero(self, texto):

@@ -18,5 +18,3 @@ class Procesamiento():
         file.write('Total: ' + str(contador))
         file.close()
 
-
-Procesamiento.ranking_candidato_mas_mencionados()
