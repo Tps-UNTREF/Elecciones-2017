@@ -66,13 +66,19 @@ class Main():
                 Persistencia.guardar(almacenamiento)
                 self.total_tweets(almacenamiento)
                 break
-
-    def total_tweets(self,almacenamiento):
+    @staticmethod
+    def total_tweets(almacenamiento):
+        lista_candidatos=[]
         contador = 0
         for candidato, tweets in almacenamiento.items():
             print(candidato, ': ', len(tweets))
             contador += len(tweets)
+            lista_candidatos.append((len(tweets),candidato))
         print('Total: ', contador)
+        return lista_candidatos
+
+
+
 
     def leer_entero(self, texto):
         while True:
