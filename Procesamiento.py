@@ -18,3 +18,5 @@ class Procesamiento():
         file.write('Total: ' + str(contador))
         file.close()
 
+
+
