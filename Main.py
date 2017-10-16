@@ -16,20 +16,20 @@ class Main():
 
         try:
             while True:
-                numero_menu = self.leer_entero('Ingrese una opción: \n' '1- Obtener tweets \n' '2- Obtener ranking(Mas tweeteados) \n' '3- Obtener Estadisticas \n' '4- Terminar \n')
+                numero_menu = self.leer_entero('Ingrese una opción: \n' '1- Obtener tweets \n' '2- Ranking de candidatos más twitteados \n' '3- Ranking de candidatos más apreciado \n' '4- Terminar \n')
 
                 if numero_menu == 1:
-                    # OBTENER TWEETS
+                    # Obtener tweets
                     self.candidatos = ["@CFKArgentina", "@estebanbullrich", "@SergioMassa", "@RandazzoF", "@nestorpitrola", "@JorgeTaiana", "@gladys_gonzalez", "@Stolbizer", "@andreadatri"]
                     almacenamiento = Persistencia.cargar()
                     self.busqueda(self.candidatos, almacenamiento)
 
                 elif numero_menu == 2:
-                    # OBTENER RANKING
+                    # Ranking de candidatos más twitteados
                     Procesamiento.ranking_candidato_mas_mencionados()
 
                 elif numero_menu == 3:
-                    # OBTENER ESTADISTICAS
+                    # Ranking de candidatos más apreciado
                     pass
 
                 elif numero_menu == 4:

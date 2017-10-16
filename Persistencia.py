@@ -1,3 +1,5 @@
+import codecs
+import csv
 import json
 import os
 import re
@@ -42,10 +44,11 @@ def normalizar_tweets():
             diccionario['Texto'] = texto7
 
 def normalizar_stop_words():
-    file = open(os.getcwd() + '\\diccionarios\\STOP_WORDS.txt', 'r')
+    file = codecs.open(os.getcwd() + '\\diccionarios\\STOP_WORDS', 'r', 'utf8')
     file_normalizado = open(os.getcwd() + '\\diccionarios\\STOP_WORDS_NORMALIZADO', 'w')
 
     for linea in file:
+        print(linea)
         texto = re.sub(r'[á]', 'a', linea)
         texto1 = re.sub(r'[é]', 'e', texto)
         texto2 = re.sub(r'[í]', 'i', texto1)
@@ -56,5 +59,21 @@ def normalizar_stop_words():
     file.close()
     file_normalizado.close()
 
+def normalizar_diccionario_de_afecto():
+    reader = csv.reader(codecs.open(os.getcwd() + '\\diccionarios\\SpanishDAL-v1.2\\meanAndStdev.csv', 'r', 'utf8'), delimiter = ';')
+    writer = csv.writer(open(os.getcwd() + '\\diccionarios\\SpanishDAL-v1.2\\meanAndStdev_normalizado.csv', 'w', newline=''), delimiter = ';')
+    for row in reader:
+        texto = re.sub(r'[á]', 'a', row[0])
+        texto1 = re.sub(r'[é]', 'e', texto)
+        texto2 = re.sub(r'[í]', 'i', texto1)
+        texto3 = re.sub(r'[ó]', 'o', texto2)
+        texto4 = re.sub(r'[ú]', 'u', texto3)
+        texto5 = re.sub(r'_[A-Z]', '', texto4)
+        row[0] = texto5
+        writer.writerow(row)
+
+
+
+
 almacen=cargar()
-normalizar_stop_words()
+normalizar_diccionario_de_afecto()
