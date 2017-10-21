@@ -30,18 +30,24 @@ class Main():
 
                 elif numero_menu == 3:
                     # Ranking de candidatos más apreciado
+                    print('Espere...')
+
                     Persistencia.normalizar_tweets()
                     Persistencia.normalizar_diccionario_de_afecto()
                     Persistencia.normalizar_stop_words()
 
-                    diccionario = Persistencia.leer_tweets()
+                    diccionario = self.procesamiento.leer_tweets()
                     diccionario_puntajes = self.procesamiento.ranking_candidatos_mas_apreciados(diccionario)
+                    print()
                     print('Estadísticas:')
                     for candidato, puntaje in diccionario_puntajes.items():
                         acumulador = 0
                         for palabra,cantidad_total in diccionario[candidato].items():
                             acumulador += cantidad_total
                         print(candidato, ': ' + str((puntaje/acumulador)*100))
+
+                    print()
+                    print()
 
                 elif numero_menu == 4:
                     #TERMINAR
