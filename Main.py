@@ -34,8 +34,14 @@ class Main():
                     Persistencia.normalizar_diccionario_de_afecto()
                     Persistencia.normalizar_stop_words()
 
-
-
+                    diccionario = Persistencia.leer_tweets()
+                    diccionario_puntajes = self.procesamiento.ranking_candidatos_mas_apreciados(diccionario)
+                    print('Estadísticas:')
+                    for candidato, puntaje in diccionario_puntajes.items():
+                        acumulador = 0
+                        for palabra,cantidad_total in diccionario[candidato].items():
+                            acumulador += cantidad_total
+                        print(candidato, ': ' + str((puntaje/acumulador)*100))
 
                 elif numero_menu == 4:
                     #TERMINAR
