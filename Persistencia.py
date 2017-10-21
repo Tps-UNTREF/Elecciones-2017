@@ -28,10 +28,12 @@ def normalizar_tweets():
                       "@JorgeTaiana", "@gladys_gonzalez", "@Stolbizer", "@andreadatri"]:
 
         file = open(os.getcwd() + '\\Archivos_guardados\\' + str(candidato).replace('@', '').lower() + '.j', 'r')
+        writer = open(os.getcwd() + '\\Archivos_guardados\\Normalizados\\' + str(candidato).replace('@', '').lower() + '.j', 'w')
         diccionario = json.load(file)
+        diccionario_normalizado = {}
         print(diccionario)
 
-        for id,valor  in diccionario.items():
+        for id,valor in diccionario.items():
             # Normalizamos texto
             texto=re.sub(r'[á]', 'a', valor['Texto'].lower())
             texto1=re.sub(r'[é]', 'e', texto)
@@ -41,7 +43,11 @@ def normalizar_tweets():
             texto5=re.sub(r'[\S]+(.com|.org|.es|.net)[\S]*', 'URL', texto4)
             texto6=re.sub(r'\B@[\S]+', 'USER', texto5)
             texto7=re.sub(r'[\S]?(http:|https:).[\S]*', 'URL', texto6)
-            diccionario['Texto'] = texto7
+            diccionario_normalizado[id] = texto7
+
+        json.dump(diccionario_normalizado,writer)
+
+
 
 def normalizar_stop_words():
     file = codecs.open(os.getcwd() + '\\diccionarios\\STOP_WORDS', 'r', 'utf8')
@@ -73,7 +79,3 @@ def normalizar_diccionario_de_afecto():
         writer.writerow(row)
 
 
-
-
-almacen=cargar()
-normalizar_diccionario_de_afecto()
