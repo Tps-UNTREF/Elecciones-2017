@@ -57,6 +57,14 @@ class Main():
                     raise NumeroNoEstaEnMenu
         except NumeroNoEstaEnMenu:
             print('Por favor, ingrese un numero del 1 al 4.')
+        except FileNotFoundError:
+            almacenamiento = {'@CFKArgentina': {}, '@estebanbullrich': {}, '@SergioMassa': {}, '@RandazzoF': {},
+                              '@nestorpitrola': {}, '@JorgeTaiana': {}, '@gladys_gonzalez': {}, '@Stolbizer': {},
+                              '@andreadatri': {}}
+            Persistencia.guardar(almacenamiento)
+            self.procesamiento.busqueda(almacenamiento)
+
+
 
 
 

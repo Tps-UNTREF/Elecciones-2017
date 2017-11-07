@@ -1,3 +1,6 @@
+import json
+import os
+
 from Main import *
 
 
@@ -36,6 +39,7 @@ class Procesamiento():
                 print('Se encontraron ' + str(contador_total_aux) + ' Tweets en esta oportunidad.')
                 break
 
+
     def total_tweets(self, almacenamiento):
         lista_candidatos = []
         contador = 0
@@ -59,3 +63,32 @@ class Procesamiento():
         print('Total: ' + str(contador))
         file.write('Total: ' + str(contador))
         file.close()
+
+    def ranking_candidatos_mas_apreciados(self, diccionario_palabras):
+        diccionario_afectos_normalizado = Persistencia.generar_diccionario_afectos_normalizados()
+        diccionario_puntajes = {}
+        for candidato, palabras in diccionario_palabras.items():  # Para cada candidato y cada palabra asociada al mismo
+            puntaje_candidato = 0
+            for palabra, cantidad in palabras.items():
+                if palabra in diccionario_afectos_normalizado.keys():
+                    puntaje_candidato += diccionario_afectos_normalizado[palabra] * cantidad
+            diccionario_puntajes[candidato] = puntaje_candidato
+        return diccionario_puntajes
+
+    def leer_tweets(self):
+        STOP_WORDS = Persistencia.cargar_STOP_WORDS()
+        apariciones_palabras = {'@CFKArgentina': {}, '@estebanbullrich': {}, '@SergioMassa': {}, '@RandazzoF': {},'@nestorpitrola': {},'@JorgeTaiana': {}, '@gladys_gonzalez': {}, '@Stolbizer': {}, '@andreadatri': {}}
+        for candidato in ["@CFKArgentina", "@estebanbullrich", "@SergioMassa", "@RandazzoF", "@nestorpitrola",
+                     "@JorgeTaiana", "@gladys_gonzalez", "@Stolbizer", "@andreadatri"]:
+            file = open(os.getcwd() + '\\Archivos_guardados\\Normalizados\\' + str(candidato).replace('@', '').lower() + '.j', 'r')
+            diccionario_normalizado = json.load(file)
+            for id,texto in diccionario_normalizado.items():
+                for p in texto.split():
+                    if len(p) >= 3 and p not in STOP_WORDS:
+                        if p not in apariciones_palabras[candidato].keys():
+                            apariciones_palabras[candidato][p] = 1
+                        else:
+                            apariciones_palabras[candidato][p] += 1
+            file.close()
+
+        return apariciones_palabras
